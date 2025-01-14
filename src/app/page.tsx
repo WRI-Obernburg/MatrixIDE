@@ -152,11 +152,3 @@ function on_event(event) {
   );
 }
 
-
-/*
-<ResizablePanelGroup direction="horizontal">
-  <ResizablePanel>One</ResizablePanel>
-  <ResizableHandle />
-  <ResizablePanel>Two</ResizablePanel>
-</ResizablePanelGroup>
-*/

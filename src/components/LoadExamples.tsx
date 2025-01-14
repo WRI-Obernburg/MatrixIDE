@@ -9,6 +9,7 @@ import {
   } from "@/components/ui/dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
+import {useState} from "react";
 
 const examples = [
     
@@ -324,21 +325,23 @@ const examples = [
 
 ];
 export default function LoadExamples(props: {onProgramLoad: (code: string)=>void}) {
+    const [open, setOpen] = useState(false);
 
-return <Dialog>
+return <Dialog open={open} onOpenChange={setOpen} >
   <DialogTrigger asChild><Button>Examples</Button></DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Load example</DialogTitle>
+      <DialogTitle className={"font-bold mb-6"}>Load example</DialogTitle>
       <DialogDescription className="flex flex-col gap-2" asChild>
             <div className="flex flex-col gap-2">
             {
                 examples.map((element, i)=>{
                     return <Card onClick={()=>{
                         props.onProgramLoad(element.code);
+                        setOpen(false);
                     }} key={i} className="cursor-pointer pl-4 pr-4 flex flex-row justify-between align-middle items-center">
                     
-                                <CardTitle className="m-4">{element.name}</CardTitle>
+                                <div className="m-4 font-normal">{element.name}</div>
 
                                 <div className="font-bold">{">"}</div>
                           
