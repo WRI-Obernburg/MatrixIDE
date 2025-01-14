@@ -18,6 +18,10 @@ export function compile(str: string): string {
 
     console.log(size);
 
+    if(size == 0) {
+        throw new Error("Unable to compile");
+    }
+
     // @ts-ignore
     let js_array = Module.HEAPU8.subarray(ptr_from_wasm, ptr_from_wasm + size);
 
@@ -50,6 +54,16 @@ export function getLEDArray(): number[] {
     return js_array;
 
 
+}
+
+export function sendEvent(id: number) {
+    // @ts-ignore
+    const ptr_from_wasm  = Module.ccall(
+        "sendEvent", // name of C function
+        null, // return type
+        ["number"], // argument types
+        [id], // arguments
+    );
 }
 
 export function initGame() {
@@ -90,4 +104,14 @@ export function destroyGame() {
         null, // argument types
         null, // arguments
     );
+}
+
+export function get_tps(): number {
+    //@ts-ignore
+    return Module.ccall(
+        "get_tps",
+        "number",
+        null,
+        null,
+    )
 }

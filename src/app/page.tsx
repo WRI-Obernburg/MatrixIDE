@@ -13,6 +13,10 @@ import LEDMatrix from "@/components/LEDMatrix";
 import LoadExamples from "@/components/LoadExamples";
 import {compile} from "@/components/Compiler";
 import EmulatorComponent from "@/components/EmulatorComponent";
+import {CompilerDialog} from "@/components/CompilerDialog";
+
+
+
 export default function Home() {
   const [content, setContent] = React.useState<string>(window.localStorage.getItem("content") ?? `
     
@@ -44,6 +48,8 @@ function on_event(event) {
 `);
 
   const [compilerOutput, setCompilerOutput] = React.useState<string>("");
+  const [messages, setMessages] = React.useState<string>("");
+  const [emulatorAvailable, setEmulatorAvailable] = React.useState<boolean>(false);
 
 
   const monaco = useMonaco();
@@ -86,32 +92,38 @@ function on_event(event) {
     input.click();
   }
 
+
+  // @ts-ignore
   return (
 
 
     <ResizablePanelGroup direction="horizontal" className={"flex w-dvw h-dvh "}>
-      <ResizablePanel minSize={20} defaultSize={25} className={"h-100 flex-grow flex flex-col bg-card w-[30%] justify-between"}>
+      <ResizablePanel minSize={20} defaultSize={25}
+                      className={"h-100 flex-grow flex flex-col bg-card w-[30%] justify-between"}>
         <div className={"font-bold self-center mt-4 text-2xl"}>Matrix-IDE</div>
-        <Card className={"bg-card shadow flex flex-col h-1/4 rounded-lg m-5"}>
-          <div className={" m-2 font-bold"}>Compiler-Ausgabe</div>
-          <div className={"flex-grow overflow-y-scroll m-2 "}>
-            {compilerOutput}
-          </div>
-          <Button onClick={()=>{
-            setCompilerOutput(compile(content));
-          }} className="m-4">Compile</Button>
-        </Card>
-        <EmulatorComponent></EmulatorComponent>
+        <CompilerDialog onClick={() => {
+
+          try {
+            let newCompilerOutput = compile(content);
+            setCompilerOutput(newCompilerOutput);
+            setEmulatorAvailable(true);
+          }catch(e){
+            setEmulatorAvailable(false);
+          }
+        }}/>
+        {
+          emulatorAvailable ? <EmulatorComponent></EmulatorComponent>: null
+        }
         <div className={"flex flex-row gap-2 self-center mb-4"}>
           <Button onClick={open}>Open</Button>
           <LoadExamples onProgramLoad={function (code: string): void {
             setContent(code);
-          }} />
-          <Button onClick={download} >Download</Button>
+          }}/>
+          <Button onClick={download}>Download</Button>
         </div>
 
       </ResizablePanel>
-      <ResizableHandle withHandle />
+      <ResizableHandle withHandle/>
       <ResizablePanel minSize={20}>
         <Editor onChange={(content) => {
           setContent(content ?? "");

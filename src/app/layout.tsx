@@ -22,16 +22,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang="en">
     <head>
-        <script async type="text/javascript" src="index.js"></script>
+
+      <script async type="text/javascript" src="overwritePrint.js"></script>
+      <script async type="text/javascript" src="index.js"></script>
+
     </head>
     <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+    >
+    {children}
+    </body>
     </html>
   );
 }
