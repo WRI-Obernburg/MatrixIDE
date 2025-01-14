@@ -66,40 +66,66 @@ export function sendEvent(id: number) {
     );
 }
 
-export function initGame() {
-    // @ts-ignore
-    const ptr_from_wasm  = Module.ccall(
-        "init", // name of C function
-        null, // return type
-        null, // argument types
-        null, // arguments
-    );
+export function initGame():boolean {
+   try {
+        // @ts-ignore
+       const ptr_from_wasm  = Module.ccall(
+           "init", // name of C function
+           null, // return type
+           null, // argument types
+           null, // arguments
+       );
+   }catch (e) {
+       // @ts-ignore
+       alert("Eine Funktion konnte in INIT nicht gefunden werden!")
+       return false;
+   }
+
+   return true;
 }
 
 export function drawGame() {
     // @ts-ignore
-    const ptr_from_wasm  = Module.ccall(
-        "draw", // name of C function
-        null, // return type
-        null, // argument types
-        null, // arguments
-    );
+    try {
+        // @ts-ignore
+        const ptr_from_wasm  = Module.ccall(
+            "draw", // name of C function
+            null, // return type
+            null, // argument types
+            null, // arguments
+        );
+    }catch (e) {
+        // @ts-ignore
+        alert("Eine Funktion konnte in DRAW nicht gefunden werden!")
+        return false;
+    }
+
+    return true;
 }
 
 export function loopGame() {
     // @ts-ignore
-    const ptr_from_wasm  = Module.ccall(
-        "game_loop", // name of C function
-        null, // return type
-        null, // argument types
-        null, // arguments
-    );
+    try {
+        // @ts-ignore
+        const ptr_from_wasm  = Module.ccall(
+            "game_loop", // name of C function
+            null, // return type
+            null, // argument types
+            null, // arguments
+        );
+    }catch (e) {
+        // @ts-ignore
+        alert("Eine Funktion konnte in GAME_LOOP nicht gefunden werden!")
+        return false;
+    }
+
+    return true;
 }
 
 export function destroyGame() {
     // @ts-ignore
     const ptr_from_wasm  = Module.ccall(
-        "game_loop", // name of C function
+        "destroy", // name of C function
         null, // return type
         null, // argument types
         null, // arguments
@@ -115,3 +141,14 @@ export function get_tps(): number {
         null,
     )
 }
+
+export function get_controls(): number {
+    //@ts-ignore
+    return Module.ccall(
+        "get_controls",
+        "number",
+        null,
+        null,
+    )
+}
+

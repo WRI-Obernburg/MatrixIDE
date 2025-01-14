@@ -18,7 +18,8 @@ import {CompilerDialog} from "@/components/CompilerDialog";
 
 
 export default function Home() {
-  const [content, setContent] = React.useState<string>(window.localStorage.getItem("content") ?? `
+
+ const newGame = `
     
 // Wird einmal beim Start deines Spiels aufgerufen
 function init() {
@@ -45,11 +46,13 @@ function on_event(event) {
 
 }
 
-`);
+`
+
+  const [content, setContent] = React.useState<string>(window.localStorage.getItem("content") ?? newGame);
 
   const [compilerOutput, setCompilerOutput] = React.useState<string>("");
   const [messages, setMessages] = React.useState<string>("");
-  const [emulatorAvailable, setEmulatorAvailable] = React.useState<boolean>(false);
+  const [compilingDone, setCompilingDone] = React.useState<boolean>(false);
 
 
   const monaco = useMonaco();
@@ -65,7 +68,20 @@ function on_event(event) {
   function download() {
     var element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
-    element.setAttribute('download', "program.matrixcode");
+    element.setAttribute('download', "program-code.matrixcode");
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }
+
+  function downloadCompiledProgram() {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(compilerOutput));
+    element.setAttribute('download', "program.mb");
 
     element.style.display = 'none';
     document.body.appendChild(element);
@@ -102,19 +118,19 @@ function on_event(event) {
                       className={"h-100 flex-grow flex flex-col bg-card w-[30%] justify-between"}>
         <div className={"font-bold self-center mt-4 text-2xl"}>Matrix-IDE</div>
         <CompilerDialog onClick={() => {
-
           try {
             let newCompilerOutput = compile(content);
             setCompilerOutput(newCompilerOutput);
-            setEmulatorAvailable(true);
+            setCompilingDone(true);
           }catch(e){
-            setEmulatorAvailable(false);
+            setCompilingDone(false);
           }
-        }}/>
-        {
-          emulatorAvailable ? <EmulatorComponent></EmulatorComponent>: null
-        }
+        }} downloadCompiledProgram={downloadCompiledProgram} showDownloadButton={compilingDone}/>
+
         <div className={"flex flex-row gap-2 self-center mb-4"}>
+          <Button onClick={()=>{
+            setContent(newGame)
+          }}>New</Button>
           <Button onClick={open}>Open</Button>
           <LoadExamples onProgramLoad={function (code: string): void {
             setContent(code);

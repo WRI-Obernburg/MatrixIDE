@@ -5,7 +5,6 @@ import {useEffect, useState} from "react";
 
 export default function LEDMatrix(props: {leds:number[]}) {
     const [hoverLED, setHoverLED] = useState<null | number>(null);
-    console.log("#"+props.leds[11].toString(16))
 
 
 

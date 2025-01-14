@@ -96,8 +96,8 @@ const examples = [
         "    if (is_animation_running()) return;\n" +
         "\n" +
         "    if (loose_state) {\n" +
-        "        clear_matrix();\n" +
-        "        draw_number(1, 4, points, 0xFF0000);\n" +
+        "        clear();\n" +
+        "        number(1, 4, points, 0xFF0000);\n" +
         "        return;\n" +
         "    }\n" +
         "\n" +
@@ -105,18 +105,18 @@ const examples = [
         "        for (var x = 0; x < 12; x++) {\n" +
         "            if (roadpieces[x][y]) {\n" +
         "                if (is_on[y]) {\n" +
-        "                    set_pixel(x, y, 0x00FF00);\n" +
+        "                    set(x, y, 0x00FF00);\n" +
         "                } else {\n" +
-        "                    set_pixel(x, y, 0xFFFFFF);\n" +
+        "                    set(x, y, 0xFFFFFF);\n" +
         "                }\n" +
         "            } else {\n" +
-        "                off_pixel(x, y);\n" +
+        "                off(x, y);\n" +
         "            }\n" +
         "        }\n" +
         "    }\n" +
         "\n" +
-        "    set_pixel(car_x, car_y, 0xFFFF00);\n" +
-        "    set_pixel(car_x, car_y + 1, 0xFFFF00);\n" +
+        "    set(car_x, car_y, 0xFFFF00);\n" +
+        "    set(car_x, car_y + 1, 0xFFFF00);\n" +
         "}\n" +
         "\n" +
         "function clean_up() {\n" +
@@ -167,12 +167,156 @@ const examples = [
 },
 
 {
-    "name": "Demo",
-    "code": "test2",
+    "name": "Snake",
+    "code": "\n" +
+        " var snake_x[];\n" +
+        " var snake_y[];\n" +
+        " var direction = -1;\n" +
+        " var loose_state = false;\n" +
+        " var food_x = 0;\n" +
+        " var food_y = 0;\n" +
+        "\n" +
+        "function reset() {\n" +
+        "    list::clear(snake_x);\n" +
+        "    list::clear(snake_y);\n" +
+        "    list::push_back(snake_x, 1);\n" +
+        "    list::push_back(snake_x, 2);\n" +
+        "    list::push_back(snake_x, 3);\n" +
+        "    list::push_back(snake_y, 5);\n" +
+        "    list::push_back(snake_y, 5);\n" +
+        "    list::push_back(snake_y, 5);\n" +
+        "    food_x = random(0,11);\n" +
+        "    food_y = random(0,11);\n" +
+        "    set_controls(0b00011011);\n" +
+        "    loose_state = false;\n" +
+        "    direction = -1;\n" +
+        "}\n" +
+        "\n" +
+        "// Wird einmal beim Start deines Spiels aufgerufen\n" +
+        "function init() {\n" +
+        "    set_tps(2);\n" +
+        "    reset();\n" +
+        "}\n" +
+        "\n" +
+        "// Wird während deines Spiels mit den Ticks pro Sekunde (tps) aufgerufen\n" +
+        "function game_loop() {\n" +
+        "    if(is_animation_running() || loose_state) {\n" +
+        "        return;\n" +
+        "    }\n" +
+        "\n" +
+        "    if(direction == 0) {\n" +
+        "        list::push_back(snake_x, snake_x[list::count(snake_x) - 1]);\n" +
+        "        list::push_back(snake_y, snake_y[list::count(snake_y) - 1]+1);\n" +
+        "    }\n" +
+        "\n" +
+        "    if(direction == 1) {\n" +
+        "        list::push_back(snake_x, snake_x[list::count(snake_x) - 1]+1);\n" +
+        "        list::push_back(snake_y, snake_y[list::count(snake_y) - 1]);\n" +
+        "    }\n" +
+        "\n" +
+        "    if(direction == 2) {\n" +
+        "        list::push_back(snake_x, snake_x[list::count(snake_x) - 1]);\n" +
+        "        list::push_back(snake_y, snake_y[list::count(snake_y) - 1] - 1);\n" +
+        "    }\n" +
+        "\n" +
+        "    if(direction == 3) {\n" +
+        "        list::push_back(snake_x, snake_x[list::count(snake_x) - 1] - 1);\n" +
+        "        list::push_back(snake_y, snake_y[list::count(snake_y) - 1]);\n" +
+        "    }\n" +
+        "\n" +
+        "    var head_x = snake_x[list::count(snake_x) - 1];\n" +
+        "    var head_y = snake_y[list::count(snake_y) - 1];\n" +
+        "      \n" +
+        "\n" +
+        "    // Check for collision with the body\n" +
+        "    for (var i = 0; i < list::count(snake_x) - 1; i++) {\n" +
+        "        if (snake_x[i] == head_x && snake_y[i] == head_y) {\n" +
+        "            loose_state = true;\n" +
+        "            set_controls(0b00100000);  // Disable controls when loose\n" +
+        "            run_animation_splash(head_x, head_y, 0xFF0000, true, 1000, 1000);  // Show crash animation\n" +
+        "            return;\n" +
+        "        }\n" +
+        "    }\n" +
+        "\n" +
+        "     // Check if snake is out of bounds\n" +
+        "    if (head_x < 0 || head_x > 11 || head_y < 0 || head_y > 11) {\n" +
+        "        loose_state = true;\n" +
+        "        set_controls(0b00100000);  // Disable controls when loose\n" +
+        "        run_animation_splash(head_x, head_y, 0xFF0000, true, 1000, 1000);  // Show crash animation\n" +
+        "        return;\n" +
+        "    }\n" +
+        "\n" +
+        "    var food_collision = (head_x == food_x) && (head_y == food_y);\n" +
+        "\n" +
+        "\n" +
+        "        if (direction != -1 && !food_collision)\n" +
+        "        {\n" +
+        "            list::pop(snake_x);\n" +
+        "            list::pop(snake_y);\n" +
+        "        }\n" +
+        "        \n" +
+        "        if (food_collision)\n" +
+        "        {\n" +
+        "            food_x = random(0, 11);\n" +
+        "            food_y = random(0, 11);\n" +
+        "        }\n" +
+        "\n" +
+        "}\n" +
+        "\n" +
+        "// Wird 30 mal pro Sekunde aufgerufen, um dein Spiel zu zeichnen\n" +
+        "function draw() {\n" +
+        "    if(is_animation_running()) {\n" +
+        "        return;\n" +
+        "    }\n" +
+        "\n" +
+        "    clear();\n" +
+        "\n" +
+        "    if(loose_state) {\n" +
+        "        number(1, 4, list::count(snake_x) - 1, 0xFF0000);\n" +
+        "        return;\n" +
+        "    }\n" +
+        "\n" +
+        "    for(var i=0;i<list::count(snake_x);i++) {\n" +
+        "        set(snake_x[i], snake_y[i], 0x00FF00);\n" +
+        "    }\n" +
+        "\n" +
+        "    set(food_x, food_y, 0xFF0000);\n" +
+        "}\n" +
+        "\n" +
+        "// Wird beim Beenden deines Spiels aufgerufen\n" +
+        "function clean_up() {\n" +
+        "\n" +
+        "}\n" +
+        "\n" +
+        "// Wird bei einer Nutzereingabe aufgerufen\n" +
+        "function on_event(event) {\n" +
+        "\n" +
+        "    if(event == 0) { //UP\n" +
+        "        direction = 0;\n" +
+        "    }\n" +
+        "\n" +
+        "     if(event == 1) { //DOWN\n" +
+        "        direction = 2;\n" +
+        "    }\n" +
+        "\n" +
+        "    if(event == 2) { //LEFT\n" +
+        "        direction = 3;\n" +
+        "    }\n" +
+        "\n" +
+        "    if(event == 3) { //RIGHT\n" +
+        "        direction = 1;\n" +
+        "    }\n" +
+        "\n" +
+        "    if(event == 5) {\n" +
+        "        reset();\n" +
+        "    }\n" +
+        "\n" +
+        "}\n" +
+        "\n",
 },
 
 {
-    "name": "Snake",
+    "name": "Demo",
     "code": "test3",
 }
 

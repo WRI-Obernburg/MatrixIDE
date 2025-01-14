@@ -1,6 +1,15 @@
 import LEDMatrix from "@/components/LEDMatrix";
 import {useEffect, useState} from "react";
-import {destroyGame, drawGame, get_tps, getLEDArray, initGame, loopGame} from "@/components/Compiler";
+import {
+    destroyGame,
+    drawGame,
+    get_controls,
+    get_tps,
+    getLEDArray,
+    initGame,
+    loopGame,
+    sendEvent
+} from "@/components/Compiler";
 import {Button} from "@/components/ui/button";
 import {
     Dialog,
@@ -10,12 +19,14 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
+import ControlButtons from "@/components/ControlButtons";
 
 export default function EmulatorComponent() {
     const [leds, setLeds] = useState<number[]>(Array(144).fill(0));
     const [open, setOpen] = useState(false);
     const [timeoutID, setTimeoutID] = useState(0);
     const [intervalID, setIntervalID] = useState(0);
+    const [controls, setControls] = useState(255);
     let ledArray:number[] = [];
 
 
@@ -35,18 +46,21 @@ export default function EmulatorComponent() {
 
 
     function emulationStep() {
-        loopGame();
+        if(!loopGame()) {
+            console.log("interrupt");
+            return;
+        }
 
+        setControls(get_controls());
 
         let newTimeoutID = window.setTimeout(emulationStep, 1000/get_tps());
-        console.log(get_tps());
         setTimeoutID(newTimeoutID);
     }
 
     function emulate() {
-
-
-        initGame();
+        if(!initGame()) {
+            return;
+        }
        let newTimeoutID = window.setTimeout(() => {
            emulationStep();
         }, 30);
@@ -54,7 +68,9 @@ export default function EmulatorComponent() {
 
        let newIntervalID = window.setInterval(()=>{
             const newLeds = [...leds];
-           drawGame();
+           if(!drawGame()) {
+               return;
+           }
            for (let i = 0; i < 144; i++) {
                const red = ledArray[i * 4];     // Red is the first byte
                const green = ledArray[i * 4 + 1]; // Green is the second byte
@@ -63,7 +79,6 @@ export default function EmulatorComponent() {
                // Combine into a 3-byte number
                newLeds[i] = (blue << 16) | (green << 8) | red;
            }
-           console.log(ledArray);
            setLeds(newLeds);
        }, 33);
 
@@ -79,13 +94,17 @@ export default function EmulatorComponent() {
     }
 
     return <Dialog open={open} onOpenChange={openChange}>
-        <DialogTrigger asChild><Button className={"m-8"}>Emulate</Button></DialogTrigger>
+        <DialogTrigger asChild><Button variant={"destructive"}  className={"w-[40%] bg-green-500 hover:bg-green-600"}>Emulate</Button></DialogTrigger>
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Matrix Emulator</DialogTitle>
                 <DialogDescription asChild>
-                    <div className={"flex flex-col"}>
+                    <div className={"flex flex-col "}>
                         <LEDMatrix leds={leds}/>
+
+                        <ControlButtons key={controls} controls={controls} click={(id:number)=>{
+                            sendEvent(id);
+                        }}></ControlButtons>
                         <Button onClick={restart}>Restart</Button>
                     </div>
                 </DialogDescription>
