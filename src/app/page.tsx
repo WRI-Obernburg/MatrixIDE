@@ -140,7 +140,7 @@ function on_event(event) {
 
       </ResizablePanel>
       <ResizableHandle withHandle/>
-      <ResizablePanel minSize={20}>
+      <ResizablePanel minSize={50}>
         <Editor onChange={(content) => {
           setContent(content ?? "");
           window.localStorage.setItem("content", content!);

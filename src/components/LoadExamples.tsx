@@ -317,17 +317,90 @@ const examples = [
 },
 
 {
-    "name": "Demo",
-    "code": "test3",
+    "name": "Referenz",
+    "code": "\n" +
+        "    \n" +
+        "// Wird einmal beim Start deines Spiels aufgerufen\n" +
+        "function init() {\n" +
+        "    print(\"Test Ausgabe\");\n" +
+        "    \n" +
+        "    var punkte = 4;\n" +
+        "    set_status(str::format(\"Deine Punkte %d\", punkte));\n" +
+        "\n" +
+        "    var status = get_status();\n" +
+        "\n" +
+        "    set_controls(0b00000001);\n" +
+        "\n" +
+        "    var controls = get_controls();\n" +
+        "\n" +
+        "    set_tps(10);\n" +
+        "\n" +
+        "    reset_controls();\n" +
+        "\n" +
+        "    if(is_animation_running()) {\n" +
+        "        return;\n" +
+        "    }\n" +
+        "\n" +
+        "    stop_animation();\n" +
+        "\n" +
+        "}\n" +
+        "\n" +
+        "// Wird während deines Spiels mit den Ticks pro Sekunde (tps) aufgerufen\n" +
+        "function game_loop() {\n" +
+        "\n" +
+        "}\n" +
+        "\n" +
+        "// Wird 30 mal pro Sekunde aufgerufen, um dein Spiel zu zeichnen\n" +
+        "function draw() {\n" +
+        "\n" +
+        "    //x, y, color\n" +
+        "    set(3, 4, 0xFF0000);\n" +
+        "\n" +
+        "    //x, y\n" +
+        "    off(4, 5);\n" +
+        "\n" +
+        "    //color\n" +
+        "    fill(0xFFFF00);\n" +
+        "\n" +
+        "    //x1, y1, x2, y2, color\n" +
+        "    line(1, 1, 5, 5, 0xFFAA00);\n" +
+        "\n" +
+        "    //x1, y1, width, height, color\n" +
+        "    rect(1,1,3,3,0x0000FF);\n" +
+        "\n" +
+        "    //x1, y1, width, height, color\n" +
+        "    rect_filled(1,1,3,3, 0x00FF00);\n" +
+        "\n" +
+        "    //x, y, radius, color\n" +
+        "    circle(3, 4, 3, 0x0000FF);\n" +
+        "\n" +
+        "    //x, y, n, color\n" +
+        "    number(3, 5, 4, 0xFFFFFF);\n" +
+        "\n" +
+        "    //x, y, color, filled\n" +
+        "    run_animation_splash(5, 5, 0xFF0000, true);\n" +
+        "\n" +
+        "    //from, to\n" +
+        "    var zufall = random(1, 10);\n" +
+        "}\n" +
+        "\n" +
+        "// Wird beim Beenden deines Spiels aufgerufen\n" +
+        "function clean_up() {\n" +
+        "\n" +
+        "}\n" +
+        "\n" +
+        "// Wird bei einer Nutzereingabe aufgerufen\n" +
+        "function on_event(event) {\n" +
+        "// 0: up, 1: down, 2: left, 3: right, 4: middle, 5: A, 6: B, 7: C\n" +
+        "}\n" +
+        "\n",
 }
-
-
 
 ];
 export default function LoadExamples(props: {onProgramLoad: (code: string)=>void}) {
     const [open, setOpen] = useState(false);
 
-return <Dialog open={open} onOpenChange={setOpen} >
+return <Dialog open={open} onOpenChange={setOpen}>
   <DialogTrigger asChild><Button>Examples</Button></DialogTrigger>
   <DialogContent>
     <DialogHeader>
