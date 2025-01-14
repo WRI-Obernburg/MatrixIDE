@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/resizable"
 import LEDMatrix from "@/components/LEDMatrix";
 import LoadExamples from "@/components/LoadExamples";
+import {compile} from "@/components/Compiler";
+import EmulatorComponent from "@/components/EmulatorComponent";
 export default function Home() {
   const [content, setContent] = React.useState<string>(window.localStorage.getItem("content") ?? `
     
@@ -41,11 +43,16 @@ function on_event(event) {
 
 `);
 
+  const [compilerOutput, setCompilerOutput] = React.useState<string>("");
+
+
   const monaco = useMonaco();
 
   useEffect(() => {
     if (monaco) {
-      monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true, });
+      monaco.languages.typescript.javascriptDefaults.setCompilerOptions({ noLib: true, allowNonTsExtensions: true });
+      monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({noSemanticValidation: true,
+        noSyntaxValidation: true,})
     }
   }, [monaco]);
 
@@ -88,11 +95,13 @@ function on_event(event) {
         <Card className={"bg-card shadow flex flex-col h-1/4 rounded-lg m-5"}>
           <div className={" m-2 font-bold"}>Compiler-Ausgabe</div>
           <div className={"flex-grow overflow-y-scroll m-2 "}>
-            {content.repeat(3)}
+            {compilerOutput}
           </div>
-          <Button className="m-4">Compile</Button>
+          <Button onClick={()=>{
+            setCompilerOutput(compile(content));
+          }} className="m-4">Compile</Button>
         </Card>
-        <LEDMatrix></LEDMatrix>
+        <EmulatorComponent></EmulatorComponent>
         <div className={"flex flex-row gap-2 self-center mb-4"}>
           <Button onClick={open}>Open</Button>
           <LoadExamples onProgramLoad={function (code: string): void {

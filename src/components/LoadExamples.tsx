@@ -14,7 +14,155 @@ const examples = [
     
 {
     "name": "Racing Game",
-    "code": "test"
+    "code": "\n" +
+        "\n" +
+        "var roadpieces[12][13];\n" +
+        "var is_on[12];\n" +
+        "var car_x = 6;\n" +
+        "var car_y = 2;\n" +
+        "var ref_point = 4;\n" +
+        "var keep_state = 2;\n" +
+        "var loop_counter = 0;\n" +
+        "var points = 0;\n" +
+        "var loose_state = false;\n" +
+        "var distance;\n" +
+        "\n" +
+        "function init() {\n" +
+        "    reset();\n" +
+        "    set_controls(0b00001010);\n" +
+        "}\n" +
+        "\n" +
+        "function game_loop() {\n" +
+        "    \n" +
+        "    if (loose_state) return;\n" +
+        "    points++;\n" +
+        "    if (is_animation_running()) return;\n" +
+        "    set_tps(get_current_tps() + 0.013 / (get_current_tps() / 10));\n" +
+        "    set_status(str::format(\"Points: %d\", points));\n" +
+        "    if (keep_state < 0 && random(0, 10) > 4) {\n" +
+        "        if (random(0, 9) > 4) {\n" +
+        "            if (ref_point > 0) {\n" +
+        "                ref_point--;\n" +
+        "                keep_state = 7;\n" +
+        "            }\n" +
+        "        } else {\n" +
+        "            if (ref_point < 6) {\n" +
+        "                ref_point++;\n" +
+        "                keep_state = 7;\n" +
+        "            }\n" +
+        "        }\n" +
+        "    }\n" +
+        "    keep_state--;\n" +
+        "\n" +
+        "    for (var y = 0; y < 12; y++) {\n" +
+        "        for (var x = 0; x < 12; x++) {\n" +
+        "            roadpieces[x][y] = roadpieces[x][y + 1];\n" +
+        "        }\n" +
+        "    }\n" +
+        "\n" +
+        "    for (var i = 0; i < 12; i++) {\n" +
+        "        roadpieces[i][12] = false;\n" +
+        "    }\n" +
+        "\n" +
+        "    roadpieces[ref_point][12] = true;\n" +
+        "\n" +
+        "    if (points > 300) {\n" +
+        "        distance = 4;\n" +
+        "    } else {\n" +
+        "        distance = 5;\n" +
+        "    }\n" +
+        "    roadpieces[ref_point + distance][12] = true;\n" +
+        "\n" +
+        "    if (loop_counter >= 3) {\n" +
+        "        loop_counter = 0;\n" +
+        "    }\n" +
+        "\n" +
+        "    for (var i = 0; i < 12; i++) {\n" +
+        "        is_on[i] = false;\n" +
+        "        if ((i + loop_counter) % 3 == 0) {\n" +
+        "            is_on[i] = true;\n" +
+        "        }\n" +
+        "    }\n" +
+        "    loop_counter++;\n" +
+        "\n" +
+        "    if (roadpieces[car_x][car_y] || roadpieces[car_x][car_y + 1]) {\n" +
+        "        loose_state = true;\n" +
+        "        set_controls(0b00100000);\n" +
+        "        run_animation_splash(car_x, car_y, 0xFF0000, true, 1000, 1000);\n" +
+        "    }\n" +
+        "}\n" +
+        "\n" +
+        "function draw() {\n" +
+        "    if (is_animation_running()) return;\n" +
+        "\n" +
+        "    if (loose_state) {\n" +
+        "        clear_matrix();\n" +
+        "        draw_number(1, 4, points, 0xFF0000);\n" +
+        "        return;\n" +
+        "    }\n" +
+        "\n" +
+        "    for (var y = 0; y < 12; y++) {\n" +
+        "        for (var x = 0; x < 12; x++) {\n" +
+        "            if (roadpieces[x][y]) {\n" +
+        "                if (is_on[y]) {\n" +
+        "                    set_pixel(x, y, 0x00FF00);\n" +
+        "                } else {\n" +
+        "                    set_pixel(x, y, 0xFFFFFF);\n" +
+        "                }\n" +
+        "            } else {\n" +
+        "                off_pixel(x, y);\n" +
+        "            }\n" +
+        "        }\n" +
+        "    }\n" +
+        "\n" +
+        "    set_pixel(car_x, car_y, 0xFFFF00);\n" +
+        "    set_pixel(car_x, car_y + 1, 0xFFFF00);\n" +
+        "}\n" +
+        "\n" +
+        "function clean_up() {\n" +
+        "}\n" +
+        "\n" +
+        "function on_event(event) {\n" +
+        "    if (event == 2) {\n" +
+        "        if (car_x > 0) {\n" +
+        "            car_x--;\n" +
+        "          }\n" +
+        "    }\n" +
+        "\n" +
+        "\n" +
+        "    if (event == 3) {\n" +
+        "        if (car_x < 11) {\n" +
+        "            car_x++;\n" +
+        "          }\n" +
+        "\n" +
+        "    }\n" +
+        "\n" +
+        "    if (event == 5) {\n" +
+        "        loose_state = false;\n" +
+        "        reset();\n" +
+        "        set_controls(0b00001010);\n" +
+        "    }\n" +
+        "}\n" +
+        "\n" +
+        "function reset() {\n" +
+        "    car_x = 5;\n" +
+        "    car_y = 2;\n" +
+        "    ref_point = 4;\n" +
+        "    keep_state = 2;\n" +
+        "    loop_counter = 0;\n" +
+        "    points = 0;\n" +
+        "\n" +
+        "    for (var x = 0; x < 12; x++) {\n" +
+        "        for (var y = 0; y < 13; y++) {\n" +
+        "            roadpieces[x][y] = y == 12 && (x <= ref_point || x >= ref_point + 5);\n" +
+        "        }\n" +
+        "    }\n" +
+        "\n" +
+        "    for (var i = 0; i < 12; i++) {\n" +
+        "        is_on[i] = false;\n" +
+        "    }\n" +
+        "    set_tps(10);\n" +
+        "}"
 
 },
 
