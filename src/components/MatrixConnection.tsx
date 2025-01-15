@@ -41,7 +41,7 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
     function fetchMatrixData() {
         setIsFetching(true);
-        fetch("http://192.168.0.1//api", {
+        fetch("http://192.168.0.1/api", {
             // @ts-ignore
             targetAddressSpace: "private",
         }).then(e => e.json()).then((data) => {
