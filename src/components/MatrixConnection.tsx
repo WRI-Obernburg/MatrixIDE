@@ -1,15 +1,16 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Card, CardContent, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
-import {RotateCw} from "lucide-react";
+import {LoaderCircle, RotateCw} from "lucide-react";
 
-export default function MatrixConnection(props: { program: Blob | null }) {
+export default function MatrixConnection(props: { program: Blob | null, changeMade: boolean }) {
 
     const [connected, setConnected] = useState(false);
     const [version, setVersion] = useState("");
     const [bootCode, setBootCode] = useState(0);
     const [isFetching, setIsFetching] = useState(true);
+    const [isSendingToMatrix, setIsSendingToMatrix] = useState(false);
 
 
     function buildEmojiCode(bootCode: number): string {
@@ -65,7 +66,7 @@ export default function MatrixConnection(props: { program: Blob | null }) {
     function sendProgramToMatrix() {
         const myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/octet-stream");
-
+        setIsSendingToMatrix(true);
 
         const requestOptions = {
             method: "POST", headers: myHeaders, body: props.program,
@@ -76,7 +77,10 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
         fetch("http://192.168.0.1/pushDevCode", requestOptions)
             .then((response) => response.text())
-            .then((result) => console.log(result))
+            .then((result) => {
+                console.log(result);
+                setIsSendingToMatrix(false);
+            })
             .catch((error) => console.error(error));
     }
 
@@ -93,7 +97,17 @@ export default function MatrixConnection(props: { program: Blob | null }) {
             {connected ? "Connected to "+buildEmojiCode(bootCode)+" with version " + version : "No connection"}
 
             {(connected && props.program) && <div className={"flex flex-row gap-2 flex-grow self-center w-full flex-1"}>
-                <Button onClick={sendProgramToMatrix} className={"flex-grow"}>Send to Matrix</Button>
+                <Button disabled={isSendingToMatrix} onClick={sendProgramToMatrix} className={`flex-grow ${props.changeMade && "opacity-60"}`}>
+                    {
+                        isSendingToMatrix?<>
+                            <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
+                            Sending...
+                        </>:"Send to Matrix"
+
+                    }
+
+
+                </Button>
                 <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/"}
                                                               target={"_blank"}>Controller</Link></Button>
                 <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/update"}

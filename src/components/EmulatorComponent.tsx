@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog"
 import ControlButtons from "@/components/ControlButtons";
 
-export default function EmulatorComponent() {
+export default function EmulatorComponent(props: {changeMade: boolean}) {
     const [leds, setLeds] = useState<number[]>(Array(144).fill(0));
     const [open, setOpen] = useState(false);
     const [timeoutID, setTimeoutID] = useState(0);
@@ -29,8 +29,6 @@ export default function EmulatorComponent() {
     const [controls, setControls] = useState(255);
     const [status, setStatus] = useState("");
     let ledArray:number[] = [];
-
-
 
     function openChange(open:boolean) {
         setOpen(open);
@@ -100,7 +98,7 @@ export default function EmulatorComponent() {
     }
 
     return <Dialog open={open} onOpenChange={openChange}>
-        <DialogTrigger asChild><Button variant={"destructive"}  className={"w-[40%] bg-green-500 hover:bg-green-600"}>Emulate</Button></DialogTrigger>
+        <DialogTrigger asChild><Button variant={"destructive"}  className={`w-[40%] bg-green-500 hover:bg-green-600 flex-grow ${props.changeMade&&"opacity-60"}`}>Emulate</Button></DialogTrigger>
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Matrix Emulator</DialogTitle>

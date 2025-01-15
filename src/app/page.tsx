@@ -47,6 +47,7 @@ function on_event(event) {
 
 
     const [content, setContent] = useLocalStorage("content", newGame);
+    const [changeMade, setChangeMade] = React.useState<boolean>(false);
 
     const [compilerOutput, setCompilerOutput] = React.useState<string>("");
     const [compilerBlob, setCompilerBlob] = React.useState<Blob | null>(null);
@@ -102,8 +103,7 @@ function on_event(event) {
             const reader = new FileReader();
             reader.readAsText(files[0], "UTF-8");
             reader.onload = function (evt) {
-                setContent(JSON.stringify(evt.target!.result!.toString()));
-
+                setContent(evt.target!.result!.toString());
             }
         };
         input.click();
@@ -115,7 +115,7 @@ function on_event(event) {
                 <div className={"font-bold self-center mt-4 text-2xl"}>Matrix-IDE</div>
                 <div className={"flex flex-col gap-4"}>
 
-                    <CompilerDialog onClick={() => {
+                    <CompilerDialog changeMade={changeMade} onClick={() => {
                         try {
                             const newCompilerOutput = compile(content);
                             setCompilerOutput(newCompilerOutput.string);
@@ -125,10 +125,12 @@ function on_event(event) {
                             console.error(e);
                             setCompilingDone(false);
                         }
+                        setChangeMade(false);
+
                     }} downloadCompiledProgram={downloadCompiledProgram} showDownloadButton={compilingDone}/>
 
 
-                    <MatrixConnection program={compilerBlob}/>
+                    <MatrixConnection changeMade={changeMade} program={compilerBlob}/>
 
                 </div>
                 <div className={"flex flex-col gap-6"}>
@@ -184,6 +186,7 @@ function on_event(event) {
             <ResizablePanel minSize={50}>
                 <Editor onChange={(content) => {
                     setContent(content ?? "");
+                    setChangeMade(true);
                 }} value={content} language={"javascript"} theme={"vs-dark"} width={"100%"}>
 
                 </Editor>
