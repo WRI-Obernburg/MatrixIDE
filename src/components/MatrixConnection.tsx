@@ -41,7 +41,7 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
     function fetchMatrixData() {
         setIsFetching(true);
-        fetch("http://matrix.local/api", {
+        fetch("http://192.168.0.1//api", {
             // @ts-ignore
             targetAddressSpace: "private",
         }).then(e => e.json()).then((data) => {
@@ -74,7 +74,7 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
         };
 
-        fetch("http://matrix.local/pushDevCode", requestOptions)
+        fetch("http://192.168.0.1//pushDevCode", requestOptions)
             .then((response) => response.text())
             .then((result) => console.log(result))
             .catch((error) => console.error(error));
@@ -94,9 +94,9 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
             {(connected && props.program) && <div className={"flex flex-row gap-2 flex-grow self-center w-full flex-1"}>
                 <Button onClick={sendProgramToMatrix} className={"flex-grow"}>Send to Matrix</Button>
-                <Button className={"flex-grow"} asChild><Link href={"http://matrix.local/"}
+                <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/"}
                                                               target={"_blank"}>Controller</Link></Button>
-                <Button className={"flex-grow"} asChild><Link href={"http://matrix.local/update"}
+                <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/update"}
                                                               target={"_blank"}>Update</Link></Button>
             </div>}
         </CardContent>
