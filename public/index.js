@@ -4440,6 +4440,8 @@ var _sendEvent = Module['_sendEvent'] = createExportWrapper('sendEvent', 1);
 var _game_loop = Module['_game_loop'] = createExportWrapper('game_loop', 0);
 var _get_tps = Module['_get_tps'] = createExportWrapper('get_tps', 0);
 var _get_controls = Module['_get_controls'] = createExportWrapper('get_controls', 0);
+var _get_status = Module['_get_status'] = createExportWrapper('get_status', 0);
+var _get_status_length = Module['_get_status_length'] = createExportWrapper('get_status_length', 0);
 var _main = Module['_main'] = createExportWrapper('main', 2);
 var _free = createExportWrapper('free', 1);
 var _fflush = createExportWrapper('fflush', 1);

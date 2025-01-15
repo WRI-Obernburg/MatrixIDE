@@ -3,7 +3,7 @@ import {useState} from "react";
 import {
     destroyGame,
     drawGame,
-    get_controls,
+    get_controls, get_status,
     get_tps,
     getLEDArray,
     initGame,
@@ -27,6 +27,7 @@ export default function EmulatorComponent() {
     const [timeoutID, setTimeoutID] = useState(0);
     const [intervalID, setIntervalID] = useState(0);
     const [controls, setControls] = useState(255);
+    const [status, setStatus] = useState("");
     let ledArray:number[] = [];
 
 
@@ -52,6 +53,7 @@ export default function EmulatorComponent() {
         }
 
         setControls(get_controls());
+        setStatus(get_status());
 
         const newTimeoutID = window.setTimeout(emulationStep, 1000/get_tps());
         setTimeoutID(newTimeoutID);
@@ -101,6 +103,8 @@ export default function EmulatorComponent() {
                 <DialogDescription asChild>
                     <div className={"flex flex-col "}>
                         <LEDMatrix leds={leds}/>
+
+                        <div className={"self-center"}>{status}</div>
 
                         <ControlButtons key={controls} controls={controls} click={(id:number)=>{
                             sendEvent(id);

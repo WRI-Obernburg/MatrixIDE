@@ -157,3 +157,27 @@ export function get_controls(): number {
     )
 }
 
+
+export function get_status(): string {
+    //@ts-ignore
+    const ptr_from_wasm  = Module.ccall(
+        "get_status", // name of C function
+        "number", // return type
+        null, // argument types
+        null, // arguments
+    );
+
+
+    // @ts-ignore
+    const size  = Module.ccall(
+        "get_status_length", // name of C function
+        "number", // return type
+        null, // argument types
+        null, // arguments
+    );
+
+    console.log(size);
+    // @ts-ignore
+    let js_array = Module.HEAPU8.subarray(ptr_from_wasm, ptr_from_wasm + size);
+   return new TextDecoder().decode(js_array);
+}
