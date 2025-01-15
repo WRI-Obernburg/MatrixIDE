@@ -47,7 +47,7 @@ function on_event(event) {
 `
 
 
-  const [content, setContent] = useLocalStorage("content", JSON.stringify(newGame));
+  const [content, setContent] = useLocalStorage("content", newGame);
 
   const [compilerOutput, setCompilerOutput] = React.useState<string>("");
   const [compilerBlob, setCompilerBlob] = React.useState<Blob | null>(null);
