@@ -41,7 +41,10 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
     function fetchMatrixData() {
         setIsFetching(true);
-        fetch("http://matrix.local/api").then(e => e.json()).then((data) => {
+        fetch("http://matrix.local/api", {
+            // @ts-ignore
+            targetAddressSpace: "private",
+        }).then(e => e.json()).then((data) => {
             setVersion(data.version);
             setBootCode(data.bootCode);
             setConnected(true);
@@ -66,6 +69,9 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
         const requestOptions = {
             method: "POST", headers: myHeaders, body: props.program,
+            // @ts-ignore
+            targetAddressSpace: "private"
+
         };
 
         fetch("http://matrix.local/pushDevCode", requestOptions)
