@@ -7,7 +7,6 @@ export function CompilerDialog(props: {
     onClick: () => void, downloadCompiledProgram: () => void, showDownloadButton: boolean
 }) {
     const [, forceUpdate] = useReducer(x => x + 1, 0);
-    const [compilerOutput, setCompilerOutput] = React.useState<string>("");
 
     function compile() {
         // @ts-ignore

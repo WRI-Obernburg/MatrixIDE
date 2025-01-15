@@ -1,5 +1,5 @@
 import LEDMatrix from "@/components/LEDMatrix";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {
     destroyGame,
     drawGame,
@@ -53,7 +53,7 @@ export default function EmulatorComponent() {
 
         setControls(get_controls());
 
-        let newTimeoutID = window.setTimeout(emulationStep, 1000/get_tps());
+        const newTimeoutID = window.setTimeout(emulationStep, 1000/get_tps());
         setTimeoutID(newTimeoutID);
     }
 
@@ -61,12 +61,12 @@ export default function EmulatorComponent() {
         if(!initGame()) {
             return;
         }
-       let newTimeoutID = window.setTimeout(() => {
+        const newTimeoutID = window.setTimeout(() => {
            emulationStep();
         }, 30);
        setTimeoutID(newTimeoutID);
 
-       let newIntervalID = window.setInterval(()=>{
+        const newIntervalID = window.setInterval(()=>{
             const newLeds = [...leds];
            if(!drawGame()) {
                return;

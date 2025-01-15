@@ -63,7 +63,7 @@ export function getLEDArray(): number[] {
 
 export function sendEvent(id: number) {
     // @ts-ignore
-    const ptr_from_wasm  = Module.ccall(
+   Module.ccall(
         "sendEvent", // name of C function
         null, // return type
         ["number"], // argument types
@@ -74,7 +74,7 @@ export function sendEvent(id: number) {
 export function initGame():boolean {
    try {
         // @ts-ignore
-       const ptr_from_wasm  = Module.ccall(
+       Module.ccall(
            "init", // name of C function
            null, // return type
            null, // argument types
@@ -93,7 +93,7 @@ export function drawGame() {
     // @ts-ignore
     try {
         // @ts-ignore
-        const ptr_from_wasm  = Module.ccall(
+       Module.ccall(
             "draw", // name of C function
             null, // return type
             null, // argument types
@@ -112,7 +112,7 @@ export function loopGame() {
     // @ts-ignore
     try {
         // @ts-ignore
-        const ptr_from_wasm  = Module.ccall(
+        Module.ccall(
             "game_loop", // name of C function
             null, // return type
             null, // argument types
@@ -129,7 +129,7 @@ export function loopGame() {
 
 export function destroyGame() {
     // @ts-ignore
-    const ptr_from_wasm  = Module.ccall(
+    Module.ccall(
         "destroy", // name of C function
         null, // return type
         null, // argument types

@@ -1,18 +1,14 @@
 "use client";
-import Image from "next/image";
 import { Editor, useMonaco } from "@monaco-editor/react";
 import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable"
-import LEDMatrix from "@/components/LEDMatrix";
 import LoadExamples from "@/components/LoadExamples";
 import {compile} from "@/components/Compiler";
-import EmulatorComponent from "@/components/EmulatorComponent";
 import {CompilerDialog} from "@/components/CompilerDialog";
 import {useLocalStorage} from "usehooks-ts";
 import MatrixConnection from "@/components/MatrixConnection";
@@ -55,7 +51,6 @@ function on_event(event) {
 
   const [compilerOutput, setCompilerOutput] = React.useState<string>("");
   const [compilerBlob, setCompilerBlob] = React.useState<Blob | null>(null);
-  const [messages, setMessages] = React.useState<string>("");
   const [compilingDone, setCompilingDone] = React.useState<boolean>(false);
 
 
@@ -70,7 +65,7 @@ function on_event(event) {
   }, [monaco]);
 
   function download() {
-    var element = document.createElement('a');
+    const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
     element.setAttribute('download', "program-code.matrixcode");
 
@@ -83,7 +78,7 @@ function on_event(event) {
   }
 
   function downloadCompiledProgram() {
-    var element = document.createElement('a');
+    const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(compilerOutput));
     element.setAttribute('download', "program.mb");
 
@@ -96,12 +91,12 @@ function on_event(event) {
   }
 
   function open() {
-    let input = document.createElement('input');
+    const input = document.createElement('input');
     input.type = 'file';
-    input.onchange = _ => {
+    input.onchange = () => {
       // you can use this method to get file and perform respective operations
-      let files = Array.from(input.files!);
-      var reader = new FileReader();
+      const files = Array.from(input.files!);
+      const reader = new FileReader();
       reader.readAsText(files[0], "UTF-8");
       reader.onload = function (evt) {
         setContent( JSON.stringify(evt.target!.result!.toString()));
@@ -122,11 +117,12 @@ function on_event(event) {
         <div className={"font-bold self-center mt-4 text-2xl"}>Matrix-IDE</div>
         <CompilerDialog onClick={() => {
           try {
-            let newCompilerOutput = compile(content);
+            const newCompilerOutput = compile(content);
             setCompilerOutput(newCompilerOutput.string);
             setCompilerBlob(newCompilerOutput.blob);
             setCompilingDone(true);
           }catch(e){
+            console.error(e);
             setCompilingDone(false);
           }
         }} downloadCompiledProgram={downloadCompiledProgram} showDownloadButton={compilingDone}/>
