@@ -34,6 +34,7 @@ export default function EmulatorComponent() {
 
     function openChange(open:boolean) {
         setOpen(open);
+        setStatus("");
         if(open) {
             ledArray = getLEDArray();
             emulate();
@@ -104,7 +105,7 @@ export default function EmulatorComponent() {
                     <div className={"flex flex-col "}>
                         <LEDMatrix leds={leds}/>
 
-                        <div className={"self-center"}>{status}</div>
+                        <div className={"self-center"}>{"Status: "+status}</div>
 
                         <ControlButtons key={controls} controls={controls} click={(id:number)=>{
                             sendEvent(id);
