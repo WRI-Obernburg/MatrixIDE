@@ -74,7 +74,7 @@ export default function MatrixConnection(props: { program: Blob | null }) {
 
         };
 
-        fetch("http://192.168.0.1//pushDevCode", requestOptions)
+        fetch("http://192.168.0.1/pushDevCode", requestOptions)
             .then((response) => response.text())
             .then((result) => console.log(result))
             .catch((error) => console.error(error));
