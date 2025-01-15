@@ -103,11 +103,9 @@ export default function ControlButtons(props: {click: (id:number) => void, contr
         {isDownEnabled ? <CB id={1} click={props.click}>DOWN</CB> :null}
 
         <div className={"flex flex-row gap-2 mt-2"}>
-
             {isAEnabled ? <CB id={5} click={props.click}>A</CB> :null}
             {isBEnabled ? <CB id={6} click={props.click}>B</CB> :null}
             {isCEnabled ? <CB id={7} click={props.click}>C</CB> :null}
-
         </div>
     </div>
 }

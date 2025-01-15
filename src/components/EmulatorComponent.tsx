@@ -72,6 +72,9 @@ export default function EmulatorComponent() {
         const newIntervalID = window.setInterval(()=>{
             const newLeds = [...leds];
            if(!drawGame()) {
+               clearTimeout(newTimeoutID);
+               clearInterval(newIntervalID);
+               openChange(false);
                return;
            }
            for (let i = 0; i < 144; i++) {
