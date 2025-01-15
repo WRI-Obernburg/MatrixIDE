@@ -14,6 +14,8 @@ import LoadExamples from "@/components/LoadExamples";
 import {compile} from "@/components/Compiler";
 import EmulatorComponent from "@/components/EmulatorComponent";
 import {CompilerDialog} from "@/components/CompilerDialog";
+import {useLocalStorage} from "usehooks-ts";
+import MatrixConnection from "@/components/MatrixConnection";
 
 
 
@@ -48,9 +50,11 @@ function on_event(event) {
 
 `
 
-  const [content, setContent] = React.useState<string>(window.localStorage.getItem("content") ?? newGame);
+
+  const [content, setContent] = useLocalStorage("content", JSON.stringify(newGame));
 
   const [compilerOutput, setCompilerOutput] = React.useState<string>("");
+  const [compilerBlob, setCompilerBlob] = React.useState<Blob | null>(null);
   const [messages, setMessages] = React.useState<string>("");
   const [compilingDone, setCompilingDone] = React.useState<boolean>(false);
 
@@ -100,8 +104,7 @@ function on_event(event) {
       var reader = new FileReader();
       reader.readAsText(files[0], "UTF-8");
       reader.onload = function (evt) {
-        setContent( evt.target!.result!.toString());
-        window.localStorage.setItem("content", evt.target!.result!.toString());
+        setContent( JSON.stringify(evt.target!.result!.toString()));
 
       }
     };
@@ -120,12 +123,16 @@ function on_event(event) {
         <CompilerDialog onClick={() => {
           try {
             let newCompilerOutput = compile(content);
-            setCompilerOutput(newCompilerOutput);
+            setCompilerOutput(newCompilerOutput.string);
+            setCompilerBlob(newCompilerOutput.blob);
             setCompilingDone(true);
           }catch(e){
             setCompilingDone(false);
           }
         }} downloadCompiledProgram={downloadCompiledProgram} showDownloadButton={compilingDone}/>
+
+
+        <MatrixConnection program={compilerBlob}/>
 
         <div className={"flex flex-row gap-2 self-center mb-4"}>
           <Button onClick={()=>{
@@ -143,7 +150,6 @@ function on_event(event) {
       <ResizablePanel minSize={50}>
         <Editor onChange={(content) => {
           setContent(content ?? "");
-          window.localStorage.setItem("content", content!);
         }} value={content} language={"javascript"} theme={"vs-dark"} width={"100%"}>
 
         </Editor>

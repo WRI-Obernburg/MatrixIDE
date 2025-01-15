@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger,
   } from "@/components/ui/dialog"
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Card} from "./ui/card";
 import { Button } from "./ui/button";
 import {useState} from "react";
 

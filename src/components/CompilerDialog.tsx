@@ -1,4 +1,4 @@
-import {Card} from "@/components/ui/card";
+import {Card, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import React, {useReducer} from "react";
 import EmulatorComponent from "@/components/EmulatorComponent";
@@ -17,8 +17,9 @@ export function CompilerDialog(props: {
     }
 
     return <Card className={"bg-card shadow flex flex-col items-stretch rounded-lg m-5 "}>
+        <CardTitle className={"m-4"}>Compiler</CardTitle>
         {//@ts-ignore
-            window.output ? <>
+            (typeof window !== "undefined" && window.output) ? <>
                 <div className={" m-2 font-bold self-center"}>Compiler-Ausgabe</div>
                 <div className={"flex-grow overflow-y-scroll m-2 whitespace-pre-wrap"}>
                     {//@ts-ignore

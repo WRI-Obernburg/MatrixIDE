@@ -1,4 +1,4 @@
-export function compile(str: string): string {
+export function compile(str: string) {
     // @ts-ignore
     const ptr_from_wasm  = Module.ccall(
         "compile", // name of C function
@@ -36,8 +36,13 @@ export function compile(str: string): string {
     output = output.slice(0, -2);
 
     output += "};";
+    const blob = new Blob([js_array]);
 
-    return output;
+    return {
+        "string": output,
+        "blob": blob
+
+    };
 }
 
 export function getLEDArray(): number[] {
