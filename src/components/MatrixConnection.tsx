@@ -3,6 +3,7 @@ import {Card, CardContent, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {LoaderCircle, RotateCw} from "lucide-react";
+import UpdateProcess from "@/components/UpdateProcess";
 
 export default function MatrixConnection(props: { program: Blob | null, changeMade: boolean }) {
 
@@ -11,46 +12,8 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
     const [bootCode, setBootCode] = useState(0);
     const [isFetching, setIsFetching] = useState(true);
     const [isSendingToMatrix, setIsSendingToMatrix] = useState(false);
-    const [isPreparingUpdate, setIsPreparingUpdate] = useState(false);
-    const [updateFile, setUpdateFile] = useState<Blob | null>(null);
-    const [isUpdateDone, setIsUpdateDone] = useState(false);
-    const [isUpdateSending, setIsUpdateSending] = useState(false);
 
-    function prepareUpdate() {
-        setIsPreparingUpdate(true);
-        const updateFile = fetch("/firmware.bin").then(e => e.blob()).then((blob) => {
-            setUpdateFile(blob);
-            setIsPreparingUpdate(false);
-        }).catch((error) => {
-            console.error(error);
-            setIsPreparingUpdate(false);
-        });
-    }
 
-    function sendUpdateToMatrix() {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/octet-stream");
-        setIsUpdateSending(true);
-
-        const requestOptions = {
-            method: "POST", headers: myHeaders, body: updateFile,
-            // @ts-ignore
-            targetAddressSpace: "private"
-
-        };
-
-        fetch("http://192.168.0.1/ota/upload", requestOptions)
-
-            .then((response) => response.text())
-            .then((result) => {
-                setIsUpdateSending(false);
-                setIsUpdateDone(true);
-            }).catch((error) => {
-                console.error(error);
-                setIsUpdateSending(false);
-            });
-
-        }
 
     function buildEmojiCode(bootCode: number): string {
         const emojis = ["🟥", "🟩", "🟦", "🟨"]; // Index corresponds to 0x00, 0x01, 0x02, 0x03
@@ -138,19 +101,6 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
                     No connection
                 </div>
 
-                <Button onClick={prepareUpdate} disabled={isPreparingUpdate || updateFile!=null}>
-
-                    {
-                        updateFile?<>
-                            Update ready!
-                        </>:
-                        isPreparingUpdate?<>
-                            <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
-                            Preparing Update...
-                        </>:"Prepare Softwareupdate"
-                    }
-
-                </Button>
 
             </div>}
 
@@ -168,23 +118,7 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
                 </Button>}
                 <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/"}
                                                               target={"_blank"}>Controller</Link></Button>
-                {
 
-                    updateFile!=null?
-                        <Button disabled={isUpdateSending || isUpdateDone} onClick={sendUpdateToMatrix} className={"flex-grow"}>
-
-                            {
-
-                                isUpdateDone?"Update done":
-                                isUpdateSending?"Updating...":"Auto Update"
-
-                            }
-
-                        </Button>
-                        : <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/update"}
-                                                                                     target={"_blank"}>Manual Update</Link></Button>
-
-                }
             </div>}
         </CardContent>
     </Card>

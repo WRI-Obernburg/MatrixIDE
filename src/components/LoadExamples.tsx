@@ -12,7 +12,11 @@ import { Button } from "./ui/button";
 import {useState} from "react";
 
 const examples = [
-    
+{
+        name: "New",
+        code: "// Wird einmal beim Start deines Spiels aufgerufen\nfunction init() {\n\n}\n\n// Wird während deines Spiels mit den Ticks pro Sekunde (tps) aufgerufen\nfunction game_loop() {\n\n}\n\n// Wird 30 mal pro Sekunde aufgerufen, um dein Spiel zu zeichnen\nfunction draw() {\n\n}\n\n// Wird beim Beenden deines Spiels aufgerufen\nfunction clean_up() {\n\n}\n\n// Wird bei einer Nutzereingabe aufgerufen\nfunction on_event(event) {\n\n}"
+    },
+
 {
     "name": "Racing Game",
     "code": "\n" +
@@ -401,10 +405,10 @@ export default function LoadExamples(props: {onProgramLoad: (code: string)=>void
     const [open, setOpen] = useState(false);
 
 return <Dialog open={open} onOpenChange={setOpen}>
-  <DialogTrigger asChild><Button>Examples</Button></DialogTrigger>
+  <DialogTrigger asChild><Button>New</Button></DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle className={"font-bold mb-6"}>Load example</DialogTitle>
+      <DialogTitle className={"font-bold mb-6"}>Create new Project</DialogTitle>
       <DialogDescription className="flex flex-col gap-2" asChild>
             <div className="flex flex-col gap-2">
             {

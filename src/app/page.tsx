@@ -12,6 +12,7 @@ import {useLocalStorage} from "usehooks-ts";
 import MatrixConnection from "@/components/MatrixConnection";
 import Image from "next/image";
 import HelpDialog from "@/components/HelpDialog";
+import UpdateProcess from "@/components/UpdateProcess";
 
 
 export default function Home() {
@@ -163,14 +164,13 @@ function on_event(event) {
             </div>
             <div className={"flex flex-col gap-6"}>
                 <div className={"flex flex-row gap-2 self-center"}>
-                    <Button onClick={() => {
-                        setContent(newGame)
-                    }}>New</Button>
-                    <Button onClick={open}>Open</Button>
+
                     <LoadExamples onProgramLoad={function (code: string): void {
                         setContent(code);
                     }}/>
+                    <Button onClick={open}>Open</Button>
                     <Button onClick={download}>Download</Button>
+                    <UpdateProcess/>
                 </div>
 
                 <footer
