@@ -333,7 +333,18 @@ const examples = [
         "\n" +
         "    var status = get_status();\n" +
         "\n" +
-        "    set_controls(0b00000001);\n" +
+        "    set_controls(0b00000001); \n" +
+        "\n" +
+        "    /*\n" +
+        "    *  button_up = 0b00000001;\n" +
+        "    *  button_left = 0b00000010;\n" +
+        "    *  button_middle = 0b00000100;\n" +
+        "    *  button_right = 0b00001000;\n" +
+        "    *  button_down = 0b00010000;\n" +
+        "    *  button_a = 0b00100000;\n" +
+        "    *  button_b = 0b01000000;\n" +
+        "    *  button_c = 0b10000000;\n" +
+        "    */\n" +
         "\n" +
         "    var controls = get_controls();\n" +
         "\n" +
@@ -397,7 +408,7 @@ const examples = [
         "function on_event(event) {\n" +
         "// 0: up, 1: down, 2: left, 3: right, 4: middle, 5: A, 6: B, 7: C\n" +
         "}\n" +
-        "\n",
+        "\n"
 }
 
 ];

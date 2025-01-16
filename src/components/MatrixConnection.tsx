@@ -86,7 +86,7 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
             });
     }
 
-    return <Card className={"m-4"}>
+    return <Card className={"ml-4 mr-4"}>
 
         <CardTitle className={"m-4 flex flex-row justify-between"}>
             <div>Matrix Connection</div>

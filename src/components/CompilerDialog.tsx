@@ -22,32 +22,36 @@ export function CompilerDialog(props: {
 
     }
 
-    return <Card className={"bg-card shadow flex flex-col items-stretch rounded-lg m-5 "}>
-        <CardTitle className={"m-4"}>Compiler</CardTitle>
+    return <Card className={"flex flex-col items-stretch ml-4  mr-4 gap-4"}>
+        <CardTitle className={"ml-4 mr-4 mt-4"}>Compiler</CardTitle>
         {//@ts-ignore
             (typeof window !== "undefined" && window.output) ? <>
-                <div className={" m-2 font-bold self-center"}>Compiler-Ausgabe</div>
+                <div className={" ml-2 mr-4 font-bold self-center"}>Compiler-Ausgabe</div>
                 <div className={"flex-grow overflow-y-scroll m-2 whitespace-pre-wrap"}>
                     {//@ts-ignore
                         window.output}
                 </div>
             </> : ""}
 
+        <div className={"ml-4"}>Press compile to process your current program</div>
+
         {
-            props.changeMade && <div className={"ml-4"}>Nicht kompilierte Änderungen!</div>
+            props.changeMade && <div className={"ml-4"}>Uncompiled changes!</div>
         }
-        <Button disabled={isCompiling} onClick={compile} className={"m-4 flex flex-row gap-2 justify-center align-middle items-center"}>
-            {isCompiling?<>
-                <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
-                Compiling...
-            </>:"Compile"
-            }
-        </Button>
-        {props.showDownloadButton ? <div className={"flex flex-row flex-1 gap-2 ml-4 mr-4 mb-4"}>
-            <Button className={`flex-grow ${props.changeMade&&"opacity-60"}`} onClick={props.downloadCompiledProgram}>
-                Download Compiled Program
+        <div className={"flex flex-col gap-2 mb-4"}>
+            <Button disabled={isCompiling} onClick={compile} className={"ml-4 mr-4 flex flex-row gap-2 justify-center align-middle items-center"}>
+                {isCompiling?<>
+                    <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
+                    Compiling...
+                </>:"Compile"
+                }
             </Button>
+            {props.showDownloadButton ? <div className={"flex flex-row flex-1 gap-2 ml-4 mr-4"}>
+                <Button className={`flex-grow ${props.changeMade&&"opacity-60"}`} onClick={props.downloadCompiledProgram}>
+                    Download Compiled Program
+                </Button>
                 <EmulatorComponent changeMade={props.changeMade} />
-        </div> : null}
+            </div> : null}
+        </div>
     </Card>;
 }
