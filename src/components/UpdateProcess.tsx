@@ -78,8 +78,8 @@ export default function UpdateProcess() {
             .then((response) => response.text())
             .then((result) => {
                 setIsBinaryUploading(false);
-                setIsUpdateDone(true)
                 setIsUpdateDone(true);
+                setIsInUpdateProcess(false);
             }).catch((error) => {
             console.error(error);
             setIsBinaryUploading(false);
