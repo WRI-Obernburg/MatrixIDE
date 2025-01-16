@@ -14,7 +14,6 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
     const [isSendingToMatrix, setIsSendingToMatrix] = useState(false);
 
 
-
     function buildEmojiCode(bootCode: number): string {
         const emojis = ["🟥", "🟩", "🟦", "🟨"]; // Index corresponds to 0x00, 0x01, 0x02, 0x03
         const getEmoji = (code: number): string => emojis[code & 0x03] || "";
@@ -41,7 +40,6 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
     }, []);
 
 
-
     function fetchMatrixData() {
         setIsFetching(true);
         fetch("http://192.168.0.1/api", {
@@ -51,7 +49,7 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
             setVersion(data.version);
             setBootCode(data.bootCode);
             setConnected(true);
-            window.onbeforeunload = ()=>{
+            window.onbeforeunload = () => {
                 return "Bist du sicher, dass du die Seite verlassen willst?";
             }
             setIsFetching(false);
@@ -71,8 +69,7 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
         setIsSendingToMatrix(true);
 
         const requestOptions = {
-            method: "POST", headers: myHeaders, body: props.program,
-            // @ts-ignore
+            method: "POST", headers: myHeaders, body: props.program, // @ts-ignore
             targetAddressSpace: "private"
 
         };
@@ -83,34 +80,36 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
                 console.log(result);
                 setIsSendingToMatrix(false);
             })
-            .catch((error) => console.error(error));
+            .catch((error) => {
+                console.error(error);
+                setIsSendingToMatrix(false);
+            });
     }
 
     return <Card className={"m-4"}>
 
         <CardTitle className={"m-4 flex flex-row justify-between"}>
             <div>Matrix Connection</div>
-            {
-                !isFetching ? <RotateCw className={"cursor-pointer"} size={16} onClick={fetchMatrixData}/>: "Loading..."
-            }
+            {!isFetching ? <RotateCw className={"cursor-pointer"} size={16} onClick={fetchMatrixData}/> : "Loading..."}
         </CardTitle>
 
         <CardContent className={"flex flex-col gap-2"}>
-            {connected ? "Connected to "+buildEmojiCode(bootCode)+" with version " + version : <div className={"flex flex-row gap-2 align-middle items-center"}>
-                <div>
-                    No connection
-                </div>
+            {connected ? "Connected to " + buildEmojiCode(bootCode) + " with version " + version :
+                <div className={"flex flex-row gap-2 align-middle items-center"}>
+                    <div>
+                        No connection
+                    </div>
 
 
-            </div>}
+                </div>}
 
-            { connected && <div className={"flex flex-row gap-2 flex-grow self-center w-full flex-1"}>
-                 {( props.program) && <Button disabled={isSendingToMatrix} onClick={sendProgramToMatrix} className={`flex-grow ${props.changeMade && "opacity-60"}`}>
-                    {
-                        isSendingToMatrix?<>
-                            <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
-                            Sending...
-                        </>:"Send to Matrix"
+            {connected && <div className={"flex flex-row gap-2 flex-grow self-center w-full flex-1"}>
+                {(props.program) && <Button disabled={isSendingToMatrix} onClick={sendProgramToMatrix}
+                                            className={`flex-grow ${props.changeMade && "opacity-60"}`}>
+                    {isSendingToMatrix ? <>
+                        <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
+                        Sending...
+                    </> : "Send to Matrix"
 
                     }
 
