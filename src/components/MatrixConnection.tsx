@@ -11,7 +11,46 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
     const [bootCode, setBootCode] = useState(0);
     const [isFetching, setIsFetching] = useState(true);
     const [isSendingToMatrix, setIsSendingToMatrix] = useState(false);
+    const [isPreparingUpdate, setIsPreparingUpdate] = useState(false);
+    const [updateFile, setUpdateFile] = useState<Blob | null>(null);
+    const [isUpdateDone, setIsUpdateDone] = useState(false);
+    const [isUpdateSending, setIsUpdateSending] = useState(false);
 
+    function prepareUpdate() {
+        setIsPreparingUpdate(true);
+        const updateFile = fetch("/firmware.bin").then(e => e.blob()).then((blob) => {
+            setUpdateFile(blob);
+            setIsPreparingUpdate(false);
+        }).catch((error) => {
+            console.error(error);
+            setIsPreparingUpdate(false);
+        });
+    }
+
+    function sendUpdateToMatrix() {
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/octet-stream");
+        setIsUpdateSending(true);
+
+        const requestOptions = {
+            method: "POST", headers: myHeaders, body: updateFile,
+            // @ts-ignore
+            targetAddressSpace: "private"
+
+        };
+
+        fetch("http://192.168.0.1/ota/upload", requestOptions)
+
+            .then((response) => response.text())
+            .then((result) => {
+                setIsUpdateSending(true);
+                setIsUpdateDone(true);
+            }).catch((error) => {
+                console.error(error);
+                setIsUpdateSending(false);
+            });
+
+        }
 
     function buildEmojiCode(bootCode: number): string {
         const emojis = ["🟥", "🟩", "🟦", "🟨"]; // Index corresponds to 0x00, 0x01, 0x02, 0x03
@@ -94,10 +133,29 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
         </CardTitle>
 
         <CardContent className={"flex flex-col gap-2"}>
-            {connected ? "Connected to "+buildEmojiCode(bootCode)+" with version " + version : "No connection"}
+            {connected ? "Connected to "+buildEmojiCode(bootCode)+" with version " + version : <div className={"flex flex-row gap-2 align-middle items-center"}>
+                <div>
+                    No connection
+                </div>
 
-            {(connected && props.program) && <div className={"flex flex-row gap-2 flex-grow self-center w-full flex-1"}>
-                <Button disabled={isSendingToMatrix} onClick={sendProgramToMatrix} className={`flex-grow ${props.changeMade && "opacity-60"}`}>
+                <Button onClick={prepareUpdate} disabled={isPreparingUpdate || updateFile!=null}>
+
+                    {
+                        updateFile?<>
+                            Update ready!
+                        </>:
+                        isPreparingUpdate?<>
+                            <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
+                            Preparing Update...
+                        </>:"Prepare Softwareupdate"
+                    }
+
+                </Button>
+
+            </div>}
+
+            { connected && <div className={"flex flex-row gap-2 flex-grow self-center w-full flex-1"}>
+                 {( props.program) && <Button disabled={isSendingToMatrix} onClick={sendProgramToMatrix} className={`flex-grow ${props.changeMade && "opacity-60"}`}>
                     {
                         isSendingToMatrix?<>
                             <LoaderCircle className={"animate-spin flex items-center justify-center w-fit h-full"}/>
@@ -107,11 +165,17 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
                     }
 
 
-                </Button>
+                </Button>}
                 <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/"}
                                                               target={"_blank"}>Controller</Link></Button>
-                <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/update"}
-                                                              target={"_blank"}>Update</Link></Button>
+                {
+
+                    updateFile!=null?
+                        <Button disabled={isUpdateSending} onClick={sendUpdateToMatrix} className={"flex-grow"}>{isUpdateSending?"Updating...":"Auto Update"}</Button>
+                        : <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/update"}
+                                                                                     target={"_blank"}>Manual Update</Link></Button>
+
+                }
             </div>}
         </CardContent>
     </Card>
