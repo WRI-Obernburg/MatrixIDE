@@ -43,7 +43,7 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
 
             .then((response) => response.text())
             .then((result) => {
-                setIsUpdateSending(true);
+                setIsUpdateSending(false);
                 setIsUpdateDone(true);
             }).catch((error) => {
                 console.error(error);
@@ -171,7 +171,16 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
                 {
 
                     updateFile!=null?
-                        <Button disabled={isUpdateSending} onClick={sendUpdateToMatrix} className={"flex-grow"}>{isUpdateSending?"Updating...":"Auto Update"}</Button>
+                        <Button disabled={isUpdateSending} onClick={sendUpdateToMatrix} className={"flex-grow"}>
+
+                            {
+
+                                isUpdateDone?"Update done":
+                                isUpdateSending?"Updating...":"Auto Update"
+
+                            }
+
+                        </Button>
                         : <Button className={"flex-grow"} asChild><Link href={"http://192.168.0.1/update"}
                                                                                      target={"_blank"}>Manual Update</Link></Button>
 
