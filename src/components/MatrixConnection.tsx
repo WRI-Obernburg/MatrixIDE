@@ -171,7 +171,7 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
                 {
 
                     updateFile!=null?
-                        <Button disabled={isUpdateSending} onClick={sendUpdateToMatrix} className={"flex-grow"}>
+                        <Button disabled={isUpdateSending || isUpdateDone} onClick={sendUpdateToMatrix} className={"flex-grow"}>
 
                             {
 
