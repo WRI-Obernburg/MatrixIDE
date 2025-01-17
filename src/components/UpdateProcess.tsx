@@ -92,7 +92,9 @@ export default function UpdateProcess() {
             },
             "body": null,
             "method": "GET",
-            "credentials": "omit"
+            "credentials": "omit",
+            // @ts-ignore
+            targetAddressSpace: "private"
         }).then(r  => {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/octet-stream");
