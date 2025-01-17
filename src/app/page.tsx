@@ -102,7 +102,7 @@ function on_event(event) {
     useEffect(() => {
         if (monaco) {
             if(presentationMode) {
-                let options = {"fontSize": 28}
+                let options = {"fontSize": 21}
                 monaco.editor.getEditors()[0].updateOptions(options);
                 //activate fullscreen
                 document.body.requestFullscreen().then(r => console.log(r)).catch(e => console.error(e));
@@ -182,7 +182,7 @@ function on_event(event) {
             </div>
             <div className={"flex flex-col gap-6"}>
                 <MatrixConnection changeMade={changeMade} program={compilerBlob}/>
-                <div className={"flex flex-row gap-2 self-center"}>
+                <div className={"ml-4 mr-4 justify-center flex flex-row flex-wrap gap-2 self-center"}>
 
                     <LoadExamples onProgramLoad={function (code: string): void {
                         setContent(code);
@@ -193,7 +193,7 @@ function on_event(event) {
                 </div>
 
                 <footer
-                    className="row-start-3 flex gap-6 flex-wrap items-center justify-center mb-4">
+                    className="flex gap-6 flex-wrap flex-ros items-center justify-center mb-4 ml-4 mr-4">
                     <HelpDialog onPresentationModeChange={setPresentationMode} isInPresentationMode={presentationMode}/>
                     <a
                         className="flex items-center gap-2 hover:underline hover:underline-offset-4"

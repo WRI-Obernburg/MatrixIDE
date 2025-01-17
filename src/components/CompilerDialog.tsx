@@ -46,9 +46,9 @@ export function CompilerDialog(props: {
                 </>:"Compile"
                 }
             </Button>
-            {props.showDownloadButton ? <div className={"flex flex-row flex-1 gap-2 ml-4 mr-4"}>
+            {props.showDownloadButton ? <div className={"flex flex-wrap flex-row flex-1 gap-2 ml-4 mr-4"}>
                 <Button className={`flex-grow ${props.changeMade&&"opacity-60"}`} onClick={props.downloadCompiledProgram}>
-                    Download Compiled Program
+                    Download Program
                 </Button>
                 <EmulatorComponent changeMade={props.changeMade} />
             </div> : null}

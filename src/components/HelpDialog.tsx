@@ -21,7 +21,7 @@ export default function HelpDialog(props: {onPresentationModeChange: (checked: b
             />
             Hilfe
         </a></DialogTrigger>
-        <DialogContent className={"max-h-[60vh] max-w-[50vw] overflow-y-hidden"}>
+        <DialogContent className={"max-h-[60vh] max-w-[50vw] overflow-y-scroll"}>
             <DialogHeader>
                 <DialogTitle className={"text-2xl"}>Informationen zur MatrixIDE</DialogTitle>
                 <DialogDescription className={"text-xl pt-4 flex justify-center"} asChild>
