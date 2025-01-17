@@ -54,6 +54,8 @@ function on_event(event) {
     const [compilerBlob, setCompilerBlob] = React.useState<Blob | null>(null);
     const [compilingDone, setCompilingDone] = React.useState<boolean>(false);
 
+    const [presentationMode, setPresentationMode] = React.useState<boolean>(false);
+
 
     const monaco = useMonaco();
 
@@ -96,6 +98,22 @@ function on_event(event) {
 
         }
     }, [monaco]);
+
+    useEffect(() => {
+        if (monaco) {
+            if(presentationMode) {
+                let options = {"fontSize": 20}
+                monaco.editor.getEditors()[0].updateOptions(options);
+                //activate fullscreen
+                document.body.requestFullscreen().then(r => console.log(r)).catch(e => console.error(e));
+            }else{
+                let options = {"fontSize": 14}
+                monaco.editor.getEditors()[0].updateOptions(options);
+                //deactivate fullscreen
+                document.exitFullscreen().then(r => console.log(r)).catch(e => console.error(e));
+            }
+        }
+        }, [presentationMode]);
 
     function download() {
         const element = document.createElement('a');
@@ -176,7 +194,7 @@ function on_event(event) {
 
                 <footer
                     className="row-start-3 flex gap-6 flex-wrap items-center justify-center mb-4">
-                    <HelpDialog/>
+                    <HelpDialog onPresentationModeChange={setPresentationMode} isInPresentationMode={presentationMode}/>
                     <a
                         className="flex items-center gap-2 hover:underline hover:underline-offset-4"
                         href="https://wri-obernburg.de"
@@ -216,7 +234,7 @@ function on_event(event) {
             <Editor onChange={(content) => {
                 setContent(content ?? "");
                 setChangeMade(true);
-            }} value={content} language={"typescript"} theme={"vs-dark"} width={"100%"}>
+            }} value={content} language={"typescript"} theme={presentationMode?"light":"vs-dark"} width={"100%"}>
 
             </Editor>
         </ResizablePanel>
