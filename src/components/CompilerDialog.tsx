@@ -25,13 +25,13 @@ export function CompilerDialog(props: {
     return <Card className={"flex flex-col items-stretch ml-4  mr-4 gap-4"}>
         <CardTitle className={"ml-4 mr-4 mt-4"}>Compiler</CardTitle>
         {//@ts-ignore
-            (typeof window !== "undefined" && window.output) ? <>
+            (typeof window !== "undefined" && window.output) ? <div className={"flex flex-col gap-1 max-h-[40vh] "}>
                 <div className={" ml-2 mr-4 font-bold self-center"}>Compiler-Ausgabe</div>
                 <div className={"flex-grow overflow-y-scroll m-2 whitespace-pre-wrap"}>
                     {//@ts-ignore
                         window.output}
                 </div>
-            </> : ""}
+            </div> : ""}
 
         <div className={"ml-4"}>Press compile to process your current program</div>
 

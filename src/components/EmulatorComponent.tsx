@@ -43,8 +43,6 @@ export default function EmulatorComponent(props: {changeMade: boolean}) {
         }
     }
 
-
-
     function emulationStep() {
         if(!loopGame()) {
             console.log("interrupt");

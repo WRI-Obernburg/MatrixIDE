@@ -158,7 +158,7 @@ function on_event(event) {
 
     return (<ResizablePanelGroup direction="horizontal" className={"flex w-dvw h-dvh "}>
         <ResizablePanel minSize={20} defaultSize={25}
-                        className={"h-100 flex-grow flex flex-col bg-card w-[30%] justify-between"}>
+                        className={"max-h-dvh flex-grow flex flex-col bg-card w-[30%] justify-between overflow-y-scroll"}>
             <div className={"flex flex-col gap-4"}>
             <div className={"font-bold self-center mt-4 text-2xl"}>Matrix-IDE</div>
 
