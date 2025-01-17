@@ -230,7 +230,7 @@ function on_event(event) {
 
         </ResizablePanel>
         <ResizableHandle withHandle/>
-        <ResizablePanel minSize={50}>
+        <ResizablePanel defaultSize={75} minSize={50}>
             <Editor onChange={(content) => {
                 setContent(content ?? "");
                 setChangeMade(true);
