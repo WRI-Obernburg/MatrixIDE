@@ -1,10 +1,16 @@
 import {
-    Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
 } from "@/components/ui/dialog"
 import {Button} from "@/components/ui/button";
 import React, {useState} from "react";
-import {LoadingSpinner} from "@/components/LoadingSpinner";
 import {LoaderCircle, RefreshCw} from "lucide-react";
+import semver from "semver";
+import crypto from 'crypto';
 
 export default function UpdateProcess() {
 
@@ -19,6 +25,17 @@ export default function UpdateProcess() {
     const [isBinaryUploading, setIsBinaryUploading] = useState<boolean>(false);
     const [isUpdateDone, setIsUpdateDone] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [version, setVersion] = useState<string | null>(null);
+    const [md5, setMD5] = useState<string | null>(null);
+
+    const computeMD5 = async (firmware:Blob) => {
+        const arrayBuffer = await firmware.arrayBuffer(); // Read Blob as ArrayBuffer
+        const uint8Array = new Uint8Array(arrayBuffer); // Convert to Uint8Array (raw byte representation)
+
+        const buffer = Buffer.from(uint8Array); // Convert Uint8Array to Node.js Buffer
+         // Compute MD5 hash
+        return crypto.createHash('md5').update(buffer).digest('hex');
+    };
 
 
     function checkMatrixConnection() {
@@ -28,7 +45,12 @@ export default function UpdateProcess() {
             targetAddressSpace: "private",
         }).then(e => e.json()).then((data) => {
             setBootCode(buildEmojiCode(data.bootCode));
-            setIsMatrixConnected(true);
+            setVersion(data.version);
+            if(!semver.gte(data.version, "1.1.1")) {
+                setError("This tool can only update a matrix with a version newer than 1.1.0. Use http://matrix.local/update for older versions.");
+            }else{
+                setIsMatrixConnected(true);
+            }
             window.onbeforeunload = ()=>{
                 return "Bist du sicher, dass du die Seite verlassen willst?";
             }
@@ -62,31 +84,44 @@ export default function UpdateProcess() {
     function uploadBinary() {
         setIsInUpdateProcess(true);
 
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/octet-stream");
-        setIsBinaryUploading(true);
 
-        const requestOptions = {
-            method: "POST", headers: myHeaders, body: updateFile,
-            // @ts-ignore
-            targetAddressSpace: "private"
+        fetch("http://192.168.0.1/ota/start?mode=fr&hash=" + md5, {
+            "headers": {
+                "accept": "*/*",
+                "accept-language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7"
+            },
+            "body": null,
+            "method": "GET",
+            "credentials": "omit"
+        }).then(r  => {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/octet-stream");
+            setIsBinaryUploading(true);
 
-        };
+            const requestOptions = {
+                method: "POST", headers: myHeaders, body: updateFile,
+                // @ts-ignore
+                targetAddressSpace: "private"
 
-        fetch("http://192.168.0.1/ota/upload", requestOptions)
+            };
 
-            .then((response) => response.text())
-            .then((result) => {
+            fetch("http://192.168.0.1/ota/upload", requestOptions)
+
+                .then((response) => response.text())
+                .then((result) => {
+                    setIsBinaryUploading(false);
+                    setIsUpdateDone(true);
+                    setIsInUpdateProcess(false);
+                }).catch((error) => {
+                console.error(error);
                 setIsBinaryUploading(false);
-                setIsUpdateDone(true);
                 setIsInUpdateProcess(false);
-            }).catch((error) => {
-            console.error(error);
-            setIsBinaryUploading(false);
-            setIsInUpdateProcess(false);
-            setError("An error occoured! Try again!")
+                setError("An error occoured! Try again!")
 
+            });
         });
+
+
 
     }
 
@@ -94,8 +129,13 @@ export default function UpdateProcess() {
         setIsBinaryDownloading(true);
         setTimeout(() => {
             const updateFile = fetch("/firmware.bin").then(e => e.blob()).then((blob) => {
-                setUpdateFile(blob);
-                setIsBinaryDownloading(false);
+                computeMD5(blob).then((hash:string)=>{
+                    setMD5(hash);
+                    console.log(hash)
+                    setUpdateFile(blob);
+                    setIsBinaryDownloading(false);
+                });
+
             }).catch((error) => {
                 console.error(error);
                 setIsBinaryDownloading(false);
@@ -166,6 +206,9 @@ export default function UpdateProcess() {
         return <>
             <div>Firmware downloaded successfully. Now connect to the matrix wifi.
             </div>
+            {
+                error&&<div className={"font-bold text-red-600"}>{error}</div>
+            }
 
             <Button disabled={isReloading} className={"flex flex-row gap-2"} onClick={checkMatrixConnection} >
                 {
