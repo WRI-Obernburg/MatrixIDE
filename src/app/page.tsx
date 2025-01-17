@@ -102,7 +102,7 @@ function on_event(event) {
     useEffect(() => {
         if (monaco) {
             if(presentationMode) {
-                let options = {"fontSize": 20}
+                let options = {"fontSize": 28}
                 monaco.editor.getEditors()[0].updateOptions(options);
                 //activate fullscreen
                 document.body.requestFullscreen().then(r => console.log(r)).catch(e => console.error(e));
