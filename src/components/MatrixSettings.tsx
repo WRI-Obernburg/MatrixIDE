@@ -57,6 +57,12 @@ export default function MatrixSettings() {
 
         if (newState) {
             fetchMatrixData();
+        }else{
+            setApps([]);
+            setStartupApp(-1);
+            setIsIncompatible(false);
+            setClickedApp(-1);
+            setIsUpdatingStartupApp(false);
         }
     }
 
