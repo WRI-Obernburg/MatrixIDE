@@ -71,20 +71,22 @@ export default function MatrixSettings() {
         setClickedApp(index);
         setIsUpdatingStartupApp(true);
 
-        fetch("http://192.168.0.1/setStartupApp?id="+index, {
-            // @ts-ignore
-            targetAddressSpace: "private",
-        }).then(e => e.json()).then((data) => {
+       setTimeout(()=>{
+           fetch("http://192.168.0.1/setStartupApp?id="+index, {
+               // @ts-ignore
+               targetAddressSpace: "private",
+           }).then(e => e.json()).then((data) => {
 
-            setStartupApp(index);
-            setIsUpdatingStartupApp(false);
-            fetchMatrixData();
+               setStartupApp(index);
+               setIsUpdatingStartupApp(false);
+               fetchMatrixData();
 
-        }).catch((error) => {
-            setIsUpdatingStartupApp(false);
+           }).catch((error) => {
+               setIsUpdatingStartupApp(false);
 
-            console.error(error);
-        });
+               console.error(error);
+           });
+       },800);
     }
 
     return <Dialog open={open} onOpenChange={onOpenChange}>
@@ -94,9 +96,7 @@ export default function MatrixSettings() {
                 <DialogTitle>Matrix Settings</DialogTitle>
                 <DialogDescription asChild>
                     <div className={"flex flex-col gap-3"}>
-                        {isLoading &&
-                            <div className={"flex flex-row gap-2"}><LoaderCircle className={"animate-spin"}/> Loading...
-                            </div>}
+
 
                         {!isLoading && !isConnected &&
                             <div className={"flex flex-row gap-2 text-red-600"}>No matrix connection! Hit reload to try
@@ -107,7 +107,10 @@ export default function MatrixSettings() {
                                 matrix to at least 1.1.1</div>}
 
                         {apps.length > 0 && <div className={"flex flex-col gap-2 mt-4"}>
-
+                            {
+                                isUpdatingStartupApp ?
+                                    <div className={"font-bold"}>Updating startup app. Please wait...</div>: <div>Click on an app to select it as your startup app!</div>
+                            }
                             <div className={"font-bold"}>Current Apps on Matrix:</div>
                             {apps.map((app, index) => {
                                 return <li key={index} onClick={()=>{updateStartupApp(index)}}
@@ -116,16 +119,17 @@ export default function MatrixSettings() {
                                                    "cursor-pointer"}>{app}</li>
                             })}
 
-                            {
-                                isUpdatingStartupApp ?
-                                    <div className={"font-bold"}>Updating startup app. Please wait...</div>: <div>Click on an app to select it as your startup app!</div>
-                            }
+
                         </div>
 
 
                         }
 
-                        <Button onClick={fetchMatrixData}>Reload</Button>
+                        {isLoading && !isConnected &&
+                            <div className={"flex flex-row gap-2"}><LoaderCircle className={"animate-spin"}/> Loading...
+                            </div>}
+
+                        <Button onClick={fetchMatrixData}>Reload list</Button>
                     </div>
                 </DialogDescription>
             </DialogHeader>
