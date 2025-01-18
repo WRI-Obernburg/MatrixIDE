@@ -30,8 +30,13 @@ export default function MatrixSettings() {
             }
             setClickedApp(-1);
             setIsConnected(true);
-            setApps(data.apps);
-            setStartupApp(data.startupID)
+            if(data.apps!=null && data.startupID != null) {
+                setApps(data.apps);
+                setStartupApp(data.startupID)
+            }else{
+                setIsIncompatible(true);
+            }
+
 
             setIsLoading(false);
         }).catch((error) => {
