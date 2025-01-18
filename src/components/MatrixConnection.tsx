@@ -3,7 +3,7 @@ import {Card, CardContent, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {LoaderCircle, RotateCw} from "lucide-react";
-import UpdateProcess from "@/components/UpdateProcess";
+import MatrixSettings from "@/components/MatrixSettings";
 
 export default function MatrixConnection(props: { program: Blob | null, changeMade: boolean }) {
 
@@ -89,7 +89,11 @@ export default function MatrixConnection(props: { program: Blob | null, changeMa
     return <Card className={"ml-4 mr-4"}>
 
         <CardTitle className={"m-4 flex flex-row justify-between"}>
-            <div>Matrix Connection</div>
+            <div className={"flex flex-row gap-2 items-center"}>
+                <div className={""}>Matrix Connection</div>
+                <MatrixSettings/>
+            </div>
+
             {!isFetching ? <RotateCw className={"cursor-pointer"} size={16} onClick={fetchMatrixData}/> : "Loading..."}
         </CardTitle>
 

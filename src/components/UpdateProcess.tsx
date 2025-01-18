@@ -11,6 +11,7 @@ import React, {useState} from "react";
 import {LoaderCircle, RefreshCw} from "lucide-react";
 import semver from "semver";
 import crypto from 'crypto';
+import Link from "next/link";
 
 export default function UpdateProcess() {
 
@@ -152,7 +153,9 @@ export default function UpdateProcess() {
                 <DialogTitle>Update LED Matrix</DialogTitle>
                 <DialogDescription asChild className={"flex flex-col"}>
                     <div className={"flex flex-col gap-4"}>
-                        {
+                        <Link className={"mt-4 underline"} href={"https://github.com/wri-obernburg/PixelMatrix/releases"}>Firmware File</Link>
+                        <div>Connect to LED Matrix and open <Link className={"underline"} href={"http://matrix.local/update"}>update page</Link></div>
+                        {/* {
                           !isUpdateDone && !updateFile && downloadBinaryUI()
                         }
 
@@ -167,6 +170,8 @@ export default function UpdateProcess() {
                         {
                             isUpdateDone && updateDoneUI()
                         }
+
+                        */}
                     </div>
 
                 </DialogDescription>
